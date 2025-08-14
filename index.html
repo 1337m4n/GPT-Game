@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rainbow Heart</title>
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #fdfdfd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+canvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+</style>
+</head>
+<body>
+<canvas id="heart"></canvas>
+<script>
+const canvas = document.getElementById('heart');
+const ctx = canvas.getContext('2d');
+function resize() {
+  canvas.width = innerWidth * devicePixelRatio;
+  canvas.height = innerHeight * devicePixelRatio;
+}
+window.addEventListener('resize', resize);
+resize();
+let scale = 0;
+let hue = 0;
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const s = Math.min(canvas.width, canvas.height) / 8 + scale;
+  ctx.save();
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.scale(s / 100, s / 100);
+  ctx.beginPath();
+  ctx.moveTo(0, -30);
+  ctx.bezierCurveTo(-50, -80, -110, -20, -110, 40);
+  ctx.bezierCurveTo(-110, 110, -40, 150, 0, 200);
+  ctx.bezierCurveTo(40, 150, 110, 110, 110, 40);
+  ctx.bezierCurveTo(110, -20, 50, -80, 0, -30);
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(-110, 0, 110, 200);
+  for (let i = 0; i <= 1; i += 0.1) {
+    grad.addColorStop(i, `hsl(${(hue + i * 360) % 360}, 90%, 60%)`);
+  }
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.restore();
+  scale += 2;
+  if (scale > Math.max(canvas.width, canvas.height) / 2) scale = 0;
+  hue = (hue + 1) % 360;
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
